@@ -791,7 +791,6 @@ final class TelecomAccountRegistry {
                 // states we are interested in from what
                 // IExtTelephony.getCurrentUiccCardProvisioningStatus()can return
                 final int PROVISIONED = 1;
-                final int INVALID_STATE = -1;
                 boolean isInEcm = false;
 
                 for (Phone phone : phones) {
@@ -808,11 +807,9 @@ final class TelecomAccountRegistry {
                                 provisionStatus =
                                         getIExtTelephony().getCurrentUiccCardProvisioningStatus(slotId);
                             } catch (RemoteException ex) {
-                                provisionStatus = INVALID_STATE;
                                 Log.w(this, "Failed to get status , slotId: "+ slotId +" Exception: "
                                         + ex);
                             } catch (NullPointerException ex) {
-                                provisionStatus = INVALID_STATE;
                                 Log.w(this, "Failed to get status , slotId: "+ slotId +" Exception: "
                                         + ex);
                             }
