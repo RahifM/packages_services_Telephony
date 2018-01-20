@@ -7,6 +7,8 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Icon;
 import android.net.sip.SipManager;
 import android.os.Bundle;
+import android.os.RemoteException;
+import android.os.ServiceManager;
 import android.os.UserManager;
 import android.preference.ListPreference;
 import android.preference.Preference;
@@ -30,6 +32,8 @@ import com.android.phone.SubscriptionInfoHelper;
 import com.android.services.telephony.sip.SipAccountRegistry;
 import com.android.services.telephony.sip.SipPreferences;
 import com.android.services.telephony.sip.SipUtil;
+
+import org.codeaurora.internal.IExtTelephony;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -67,6 +71,8 @@ public class PhoneAccountSettingsFragment extends PreferenceFragment
 
     private static final String LOG_TAG = PhoneAccountSettingsFragment.class.getSimpleName();
 
+    private boolean isXdivertAvailable = false;
+
     private TelecomManager mTelecomManager;
     private TelephonyManager mTelephonyManager;
     private SubscriptionManager mSubscriptionManager;
@@ -86,6 +92,20 @@ public class PhoneAccountSettingsFragment extends PreferenceFragment
         mTelecomManager = TelecomManager.from(getActivity());
         mTelephonyManager = TelephonyManager.from(getActivity());
         mSubscriptionManager = SubscriptionManager.from(getActivity());
+
+        IExtTelephony extTelephony =
+                IExtTelephony.Stub.asInterface(ServiceManager.getService("extphone"));
+
+        try {
+            if (extTelephony != null) {
+                isXdivertAvailable = extTelephony.isVendorApkAvailable("com.qti.xdivert");
+            } else {
+                Log.d(LOG_TAG, "xdivert not available");
+            }
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -154,13 +174,13 @@ public class PhoneAccountSettingsFragment extends PreferenceFragment
             getPreferenceScreen().removePreference(mAccountList);
         }
 
-        if (TelephonyManager.getDefault().getMultiSimConfiguration() !=
+        if (!isXdivertAvailable || TelephonyManager.getDefault().getMultiSimConfiguration() !=
                  TelephonyManager.MultiSimVariants.DSDS) {
             Preference mSmartDivertPref = getPreferenceScreen()
                 .findPreference(BUTTON_SMART_DIVERT_KEY);
-            if (mSmartDivertPref != null) {
+            if (mAccountList != null && mSmartDivertPref != null) {
                 Log.d(LOG_TAG, "Remove smart divert preference: ");
-                getPreferenceScreen().removePreference(mSmartDivertPref);
+                mAccountList.removePreference(mSmartDivertPref);
             }
         }
 
