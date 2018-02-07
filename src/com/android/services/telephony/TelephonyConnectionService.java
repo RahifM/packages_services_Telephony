@@ -993,6 +993,8 @@ public class TelephonyConnectionService extends ConnectionService {
         String number = connection.getAddress().getSchemeSpecificPart();
         boolean isAddParticipant = (extras != null) && extras
                 .getBoolean(TelephonyProperties.ADD_PARTICIPANT_KEY, false);
+
+        updatePhoneAccount(connection, phone);
         Log.d(this, "placeOutgoingConnection isAddParticipant = " + isAddParticipant);
 
         com.android.internal.telephony.Connection originalConnection = null;
