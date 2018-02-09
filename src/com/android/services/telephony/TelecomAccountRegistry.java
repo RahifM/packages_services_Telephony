@@ -77,7 +77,7 @@ final class TelecomAccountRegistry {
     private final static String GROUP_PREFIX = "group_";
 
     // Flag which decides whether SIM should power down due to APM,
-    private static final String APM_SIM_NOT_PWDN_PROPERTY = "persist.radio.apm_sim_not_pwdn";
+    private static final String APM_SIM_NOT_PWDN_PROPERTY = "persist.vendor.radio.apm_sim_not_pwdn";
 
     private enum Count {
         ZERO,
