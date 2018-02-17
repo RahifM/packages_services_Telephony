@@ -1434,8 +1434,7 @@ abstract class TelephonyConnection extends Connection
                     // mOriginalConnection could not be set for many seconds.
                     setDisconnected(DisconnectCauseUtil.toTelecomDisconnectCause(
                             android.telephony.DisconnectCause.LOCAL,
-                            "Local Disconnect before connection established.",
-                             getPhone().getPhoneId()));
+                            "Local Disconnect before connection established."));
                     close();
                 }
             }
